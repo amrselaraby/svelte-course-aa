@@ -8,11 +8,12 @@
 		children: Snippet<[boolean]>;
 		size?: 'sm' | 'lg';
 		shadow?: boolean;
+		onclick?: () => void;
 	}
-	let { left, right, size = 'sm', shadow = false, children }: Props = $props();
+	let { left, right, size = 'sm', shadow = false, children, onclick }: Props = $props();
 </script>
 
-<button class:sm={size === 'sm'} class:lg={size === 'lg'} class:shadow>
+<button {onclick} class:sm={size === 'sm'} class:lg={size === 'lg'} class:shadow>
 	{#if left}
 		<div
 			role="presentation"
