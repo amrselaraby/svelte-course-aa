@@ -21,4 +21,8 @@
 	]);
 </script>
 
-<Sheet {data} />
+<Sheet bind:data />
+
+<pre>
+	{JSON.stringify(data, null, 2)}
+</pre>
