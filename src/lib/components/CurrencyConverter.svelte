@@ -4,10 +4,27 @@
 	let baseCurrency = $state('usd');
 	let baseRates = $derived(dummyRates[baseCurrency]);
 	let targetCurrency = $state('eur');
-	let targetValue = $derived(
-		baseValue && baseRates[targetCurrency] && baseValue * baseRates[targetCurrency]
-	);
-	$inspect(targetValue);
+	// let targetValue: number | undefined = $state(calculateTarget());
+	let targetValue = {
+		get value() {
+			return calculateTarget();
+		},
+		set value(v) {
+			baseValue = calculateBase(v);
+		}
+	};
+	function calculateTarget() {
+		return (
+			baseValue && baseRates[targetCurrency] && +(baseValue * baseRates[targetCurrency]).toFixed(3)
+		);
+	}
+	function calculateBase(targetValue: number) {
+		return (
+			targetValue &&
+			baseRates[targetCurrency] &&
+			+(targetValue / baseRates[targetCurrency]).toFixed(3)
+		);
+	}
 </script>
 
 <div class="wrapper">
@@ -28,19 +45,7 @@
 		>
 	</div>
 	<div class="base">
-		<input
-			type="number"
-			bind:value={
-				() => baseValue,
-				(val) => {
-					if (val < 0) {
-						baseValue = 1;
-						return;
-					}
-					baseValue = val;
-				}
-			}
-		/>
+		<input type="number" bind:value={baseValue} />
 		<select bind:value={baseCurrency}>
 			<option value="usd">Unted States Dollars</option>
 			<option value="eur">Euro</option>
@@ -50,7 +55,7 @@
 
 	<div class="target">
 		<div class="target">
-			<input value={targetValue} type="number" />
+			<input bind:value={targetValue.value} type="number" />
 			<select bind:value={targetCurrency}>
 				<option value="usd">United States Dollar</option>
 				<option value="eur">Euro</option>
